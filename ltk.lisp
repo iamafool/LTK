@@ -607,6 +607,7 @@ toplevel             x
   ;(send-wish "proc esc {s} {puts \"\\\"[regsub -all {\"} [regsub -all {\\\\} $s {\\\\\\\\}] {\\\"}]\\\"\"} ")
   ;(send-wish "proc escape {s} {return [regsub -all {\"} [regsub -all {\\\\} $s {\\\\\\\\}] {\\\"}]} ")
   (send-wish "package require Tk")
+  (send-wish "package require Tktable")
   (flush-wish)
 
   #+:tk84
@@ -2384,6 +2385,11 @@ a list of numbers may be given"
   (format-wish "~a tab ~a -~(~a~) {~a}" (widget-path nb)
 	       (widget-path w) option value))
 
+(defmethod notebook-tab ((nb notebook) (w string) option value)
+  (declare (ignore value))
+  (format-wish "senddatastring [~a tab ~a -~(~a~)]" (widget-path nb) w option)
+  (read-data))
+
 (defgeneric notebook-forget (nb widget))
 (defmethod notebook-forget ((nb notebook) (w widget))
   (format-wish "~a forget ~a" (widget-path nb) (widget-path w)))
@@ -2394,7 +2400,7 @@ a list of numbers may be given"
 
 (defgeneric notebook-identify (nb x y))
 (defmethod notebook-identify ((nb notebook) x y)
-  (format-wish "senddatastring [~a identify ~a ~a]" (widget-path nb) x y)
+  (format-wish "senddatastring [~a identify tab ~a ~a]" (widget-path nb) x y)
   (read-data))
 
 (defgeneric notebook-index (nb tab))
