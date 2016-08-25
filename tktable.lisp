@@ -10,6 +10,8 @@
    #:subvals
    #:vals
    #:set-row
+   #:index-row
+   #:index-col
    #:defmethod))
 
 (in-package :tktable)
@@ -75,7 +77,19 @@
 
 (defgeneric set-row (table row value-list))
 (defmethod set-row ((table table) row value-list)
-  (format-wish "~a set row ~d,0 {~{{~a}~^ ~}}" (widget-path table) row value-list))  
+  (format-wish "~a set row ~d,0 {~{{~a}~^ ~}}" (widget-path table) row value-list))
+
+(defgeneric index-row (table-path index))
+(defmethod index-row ((table-path string) (index string))
+  (format-wish "senddata [~a index ~a row]" table-path index)
+  (ltk::read-data))
+
+(defgeneric index-col (table-path index))
+(defmethod index-col ((table-path string) (index string))
+  (format-wish "senddata [~a index ~a col]" table-path index)
+  (ltk::read-data))
+
+  
 
 (defclass scrolled-table (frame)
   ((table :accessor table)
@@ -127,3 +141,4 @@
       (pack sctable :side :top :fill :both :expand t)
       (format t "7 * 8 is ~a~%" (car (subvals (table sctable) 7 8)))
       (finish-output))))
+
